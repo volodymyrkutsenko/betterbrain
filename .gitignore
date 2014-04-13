@@ -1,0 +1,13 @@
+*.class
+
+# eclipse specific git ignore
+.project
+.metadata
+bin/**
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# Locally stored "Eclipse launch configurations"
+*.launch
