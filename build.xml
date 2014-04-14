@@ -52,7 +52,7 @@
 
 			<batchtest fork="yes">
 				<fileset dir="${src.test}">
-					<include name="**/*.java"/>
+					<include name="**/*Test.java"/>
 				</fileset>
 			</batchtest>
 
