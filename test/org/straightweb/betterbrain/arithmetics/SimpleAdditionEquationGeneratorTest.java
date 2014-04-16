@@ -23,7 +23,7 @@ public class SimpleAdditionEquationGeneratorTest {
 	}
 	
 	@Test
-	public void testOperationTypeLimit() {
+	public void testOperationType() {
 		SimpleArithmeticEquationGenerator additionEquationGenerator = new SimpleAdditionEquationGenerator();
 		org.junit.Assert.assertTrue(additionEquationGenerator.generateEquation().getOperation() == ArithmeticOperation.ADDITION);
 	}

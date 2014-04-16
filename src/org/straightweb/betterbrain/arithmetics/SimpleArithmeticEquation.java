@@ -10,6 +10,9 @@ public class SimpleArithmeticEquation {
 			ArithmeticOperation operation) {
 		this.firstArgument = firstArgument;
 		this.secondArgument = secondArgument;
+		if (operation == null) {
+			throw new IllegalArgumentException("The operation parameter cannot be null");
+		}
 		this.operation = operation;
 	}
 
@@ -30,9 +33,9 @@ public class SimpleArithmeticEquation {
 		case ADDITION:
 			return getFirstArgument() + getSecondArgument();
 		case SUBTRACTION:
-			return getFirstArgument() + getSecondArgument();
+			return getFirstArgument() - getSecondArgument();
 		case MULTIPLICATION:
-			return getFirstArgument() + getSecondArgument();
+			return getFirstArgument() * getSecondArgument();
 		default:
 			return 0;
 		}
