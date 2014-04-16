@@ -2,6 +2,7 @@ package org.straightweb.betterbrain.main;
 
 import org.straightweb.betterbrain.arithmetics.SimpleAdditionEquationGenerator;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationGenerator;
+import org.straightweb.betterbrain.arithmetics.SimpleMultiplicationEquationGenerator;
 import org.straightweb.betterbrain.arithmetics.SimpleSubtractionEquationGenerator;
 
 public class BetterBrainMain {
@@ -19,9 +20,7 @@ public class BetterBrainMain {
 		} else if ("S".equalsIgnoreCase(equationGeneratorType)) {
 			equationGenerator = new SimpleSubtractionEquationGenerator();
 		} else if ("M".equalsIgnoreCase(equationGeneratorType)) {
-			System.out
-					.println("Multiplication equation generator is not implemneted yet");
-			return;
+			equationGenerator = new SimpleMultiplicationEquationGenerator();
 		} else {
 			System.out.println("Generator type can only be A, S or M");
 			return;
