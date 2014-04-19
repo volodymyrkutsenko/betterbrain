@@ -53,4 +53,11 @@ public class SimpleArithmeticEquationTest {
 		}
 	}
 	
+	@Test
+	public void testEquality() {
+		org.junit.Assert.assertTrue(new SimpleArithmeticEquation(1, 2, ArithmeticOperation.MULTIPLICATION).equals(new SimpleArithmeticEquation(1, 2, ArithmeticOperation.MULTIPLICATION)));
+		org.junit.Assert.assertFalse(new SimpleArithmeticEquation(1, 1, ArithmeticOperation.MULTIPLICATION).equals(new SimpleArithmeticEquation(1, 1, ArithmeticOperation.SUBTRACTION)));
+		org.junit.Assert.assertFalse(new SimpleArithmeticEquation(1, 2, ArithmeticOperation.MULTIPLICATION).equals(new SimpleArithmeticEquation(2, 1, ArithmeticOperation.MULTIPLICATION)));
+	}
+	
 }

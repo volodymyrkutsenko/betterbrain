@@ -1,7 +1,7 @@
 package org.straightweb.betterbrain.arithmetics;
 
-public class SimpleArithmeticEquation {
 
+public class SimpleArithmeticEquation {
 	private int firstArgument;
 	private int secondArgument;
 	private ArithmeticOperation operation;
@@ -61,6 +61,35 @@ public class SimpleArithmeticEquation {
 		result.append(getSecondArgument()).append(" = ").append(getResult());
 
 		return result.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + firstArgument;
+		result = prime * result
+				+ ((operation == null) ? 0 : operation.hashCode());
+		result = prime * result + secondArgument;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SimpleArithmeticEquation other = (SimpleArithmeticEquation) obj;
+		if (firstArgument != other.firstArgument)
+			return false;
+		if (operation != other.operation)
+			return false;
+		if (secondArgument != other.secondArgument)
+			return false;
+		return true;
 	}
 
 }
