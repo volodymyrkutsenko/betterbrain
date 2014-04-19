@@ -4,7 +4,10 @@ package org.straightweb.betterbrain.arithmetics;
 public class SimpleArithmeticEquation {
 	private int firstArgument;
 	private int secondArgument;
+	private int result;
 	private ArithmeticOperation operation;
+	
+	private String toStringValue;
 	
 	public SimpleArithmeticEquation(int firstArgument, int secondArgument,
 			ArithmeticOperation operation) {
@@ -14,6 +17,9 @@ public class SimpleArithmeticEquation {
 			throw new IllegalArgumentException("The operation parameter cannot be null");
 		}
 		this.operation = operation;
+		
+		calculateResult();
+		calculateToStringValue();
 	}
 
 	public int getFirstArgument() {
@@ -29,20 +35,24 @@ public class SimpleArithmeticEquation {
 	}
 
 	public int getResult() {
+		return result;
+	}
+	
+	private void calculateResult() {
 		switch (getOperation()) {
 		case ADDITION:
-			return getFirstArgument() + getSecondArgument();
+			result = getFirstArgument() + getSecondArgument();
+			break;
 		case SUBTRACTION:
-			return getFirstArgument() - getSecondArgument();
+			result = getFirstArgument() - getSecondArgument();
+			break;
 		case MULTIPLICATION:
-			return getFirstArgument() * getSecondArgument();
-		default:
-			return 0;
+			result = getFirstArgument() * getSecondArgument();
+			break;
 		}
 	}
 	
-	@Override
-	public String toString() {
+	private void calculateToStringValue() {
 		StringBuilder result = new StringBuilder();
 		result.append(getFirstArgument());
 		switch (getOperation()) {
@@ -60,7 +70,12 @@ public class SimpleArithmeticEquation {
 		}
 		result.append(getSecondArgument()).append(" = ").append(getResult());
 
-		return result.toString();
+		toStringValue = result.toString();
+	}
+	
+	@Override
+	public String toString() {
+		return toStringValue;
 	}
 
 	@Override
