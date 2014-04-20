@@ -19,13 +19,8 @@ public class SimpleArithmeticEquationSheetGenerator {
 		EQUATION_GENERATORS.put(ArithmeticOperation.MULTIPLICATION, new SimpleMultiplicationEquationGenerator());
 	}
 	
-	public SimpleArithmeticEquationSheet generateSheet(int equationsOnSheet, int duplicatesMaxQuantity) {
-		if (equationsOnSheet < 1) {
-			throw new IllegalArgumentException("The equationsOnSheet parameter must be greater than zero");
-		}
-		if (duplicatesMaxQuantity < 0) {
-			throw new IllegalArgumentException("The duplicatesMaxQuantity parameter cannot be negative");
-		}
+	public SimpleArithmeticEquationSheet generateSheet(EquationSheetGenerateRequest sheetGenerateRequest) {
+		int equationsOnSheet = sheetGenerateRequest.getEquationsOnSheet();
 		
 		List<SimpleArithmeticEquation> equations = new ArrayList<>(equationsOnSheet);
 		int equationsOfSameTypeMaxQuantity = calculateEquationsOfSameTypeMaxQuantity(equationsOnSheet);
@@ -36,12 +31,34 @@ public class SimpleArithmeticEquationSheetGenerator {
 		examplesTypeQuantities.put(ArithmeticOperation.SUBTRACTION, 0);
 		examplesTypeQuantities.put(ArithmeticOperation.MULTIPLICATION, 0);
 		int duplicatesQuantity = 0;
+		int zeroResultExamplesQuantity = 0;
+		int zeroArgumentedExamplesQuantity = 0;
 		while (equationsGeneratedForSheet < equationsOnSheet) {
 			ArithmeticOperation exampleOperation = getRandomArithmeticOperation();
 			SimpleArithmeticEquation equation = EQUATION_GENERATORS.get(exampleOperation).generateEquation();
+			
+			boolean isZeroResult = false;
+			if (equation.isZeroResult()) {
+				if (zeroResultExamplesQuantity < sheetGenerateRequest.getZeroResultEquationsMaxQuantity()) {
+					isZeroResult = true;
+				} else {
+					continue;
+				}
+			}
+			
+			boolean isZeroArgumented = false;
+			if (equation.isZeroArgumented()) {
+				if (zeroArgumentedExamplesQuantity < sheetGenerateRequest.getZeroArgumentedEquationsMaxQuantity()) {
+					isZeroArgumented = true;
+				} else {
+					continue;
+				}
+			}
+			
+			boolean isDuplicate = false;
 			if (equations.contains(equation)) {
-				if (duplicatesQuantity < duplicatesMaxQuantity) {
-					duplicatesQuantity++;
+				if (duplicatesQuantity < sheetGenerateRequest.getDuplicatesMaxQuantity()) {
+					isDuplicate = true;
 				} else {
 					continue;
 				}
@@ -55,6 +72,16 @@ public class SimpleArithmeticEquationSheetGenerator {
 			equations.add(equation);
 			
 			examplesTypeQuantities.put(exampleOperation, equationTypeQuantity + 1);
+			
+			if (isZeroResult) {
+				zeroResultExamplesQuantity++;
+			}
+			if (isZeroArgumented) {
+				zeroArgumentedExamplesQuantity++;
+			}
+			if (isDuplicate) {
+				duplicatesQuantity++;
+			}
 			
 			equationsGeneratedForSheet++;
 		}

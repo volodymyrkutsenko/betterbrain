@@ -38,6 +38,14 @@ public class SimpleArithmeticEquation {
 		return result;
 	}
 	
+	public boolean isZeroArgumented() {
+		return getFirstArgument() == 0 || getSecondArgument() == 0;
+	}
+	
+	public boolean isZeroResult() {
+		return getResult() == 0;
+	}
+	
 	private void calculateResult() {
 		switch (getOperation()) {
 		case ADDITION:

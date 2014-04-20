@@ -14,17 +14,17 @@ public class SimpleArithmeticEquationSheetGeneratorTest {
 	
 	@Test
 	public void testEquationsQuantity() {
-		SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 1);
+		SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1));
 		org.junit.Assert.assertTrue(sheet.getEquations().size() == 100);
 		
 		
-		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(2, 1);
+		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(2, 1));
 		org.junit.Assert.assertTrue(sheet.getEquations().size() == 2);
 		
-		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(1, 1);
+		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(1, 1));
 		org.junit.Assert.assertTrue(sheet.getEquations().size() == 1);
 		
-		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100000, 100000);
+		sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100000, 100000));
 		org.junit.Assert.assertTrue(sheet.getEquations().size() == 100000);
 		
 		// this exceeds array size VM limit 
@@ -33,39 +33,9 @@ public class SimpleArithmeticEquationSheetGeneratorTest {
 	}
 	
 	@Test
-	public void testZeroEquationsQuantity() {
-		try {
-			new SimpleArithmeticEquationSheetGenerator().generateSheet(0, 1);
-			org.junit.Assert.fail("SimpleArithmeticEquationSheetGenerator should have thrown an exception b/c of 0 as the equationsOnSheet parameter!");
-		} catch (Exception e) {
-			// test passes
-		}
-	}
-	
-	@Test
-	public void testNegativeEquationsQuantity() {
-		try {
-			new SimpleArithmeticEquationSheetGenerator().generateSheet(-1, 1);
-			org.junit.Assert.fail("SimpleArithmeticEquationSheetGenerator should have thrown an exception b/c of of the negative equationsOnSheet parameter!");
-		} catch (Exception e) {
-			// test passes
-		}
-	}
-	
-	@Test
-	public void testNegativeDuplicatesMaxQuantity() {
-		try {
-			new SimpleArithmeticEquationSheetGenerator().generateSheet(100, -1);
-			org.junit.Assert.fail("SimpleArithmeticEquationSheetGenerator should have thrown an exception b/c of the negative duplicatesMaxQuantity parameter!");
-		} catch (Exception e) {
-			// test passes
-		}
-	}
-	
-	@Test
 	public void testEquationsOfSameTypeQuantity() {
 		for (int i = 0; i < TEST_SAMPLES_QUANTITY; i++) {
-			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 1);
+			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1));
 			
 			int additionExamplesQuantity = calculateExamplesQuantity(sheet, ArithmeticOperation.ADDITION);
 			org.junit.Assert.assertTrue("ArithmeticOperation.ADDITION quantity is " + additionExamplesQuantity, additionExamplesQuantity  < 36);
@@ -92,20 +62,20 @@ public class SimpleArithmeticEquationSheetGeneratorTest {
 	@Test
 	public void testEquationsDuplicates() {
 		for (int i = 0; i < TEST_SAMPLES_QUANTITY; i++) {
-			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 1);
+			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1));
 			
 			int duplicatesQuantity = calculateDuplicatesQuantity(sheet);
 			org.junit.Assert.assertTrue("duplicatesQuantity = " + duplicatesQuantity, duplicatesQuantity <= 1);
 			
-			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 2);
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 2));
 			duplicatesQuantity = calculateDuplicatesQuantity(sheet);
 			org.junit.Assert.assertTrue("duplicatesQuantity = " + duplicatesQuantity, duplicatesQuantity <= 2);
 			
-			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 5);
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 5));
 			duplicatesQuantity = calculateDuplicatesQuantity(sheet);
 			org.junit.Assert.assertTrue("duplicatesQuantity = " + duplicatesQuantity, duplicatesQuantity <= 5);
 			
-			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(100, 0);
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 0));
 			duplicatesQuantity = calculateDuplicatesQuantity(sheet);
 			org.junit.Assert.assertTrue("duplicatesQuantity = " + duplicatesQuantity, duplicatesQuantity <= 0);
 		}
@@ -130,5 +100,70 @@ public class SimpleArithmeticEquationSheetGeneratorTest {
 			checkedEquations.add(equation);
 		}
 		return duplicatesQuantity;
+	}
+	
+	@Test
+	public void testZeroArgumentedEquationsLimit() {
+		for (int i = 0; i < TEST_SAMPLES_QUANTITY; i++) {
+			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 3));
+			
+			int zeroArgumentedEquationsQuantity = calculateZeroArgumentedEquations(sheet);
+			org.junit.Assert.assertTrue("zeroArgumentedEquationsQuantity = " + zeroArgumentedEquationsQuantity, zeroArgumentedEquationsQuantity <= 3);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 2));
+			zeroArgumentedEquationsQuantity = calculateZeroArgumentedEquations(sheet);
+			org.junit.Assert.assertTrue("zeroArgumentedEquationsQuantity = " + zeroArgumentedEquationsQuantity, zeroArgumentedEquationsQuantity <= 2);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 5));
+			zeroArgumentedEquationsQuantity = calculateZeroArgumentedEquations(sheet);
+			org.junit.Assert.assertTrue("zeroArgumentedEquationsQuantity = " + zeroArgumentedEquationsQuantity, zeroArgumentedEquationsQuantity <= 5);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 0));
+			zeroArgumentedEquationsQuantity = calculateZeroArgumentedEquations(sheet);
+			org.junit.Assert.assertTrue("zeroArgumentedEquationsQuantity = " + zeroArgumentedEquationsQuantity, zeroArgumentedEquationsQuantity <= 0);
+		}
+	}
+	
+	private static int calculateZeroArgumentedEquations(SimpleArithmeticEquationSheet sheet) {
+		int zeroArgumentedEquationsQuantity = 0;
+		for (SimpleArithmeticEquation equation : sheet.getEquations()) {
+			if (equation.isZeroArgumented()) {
+				zeroArgumentedEquationsQuantity++;
+			}
+		}
+		return zeroArgumentedEquationsQuantity;
+	}
+	
+	
+	@Test
+	public void testZeroResultEquationsLimit() {
+		for (int i = 0; i < TEST_SAMPLES_QUANTITY; i++) {
+			SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 4, 3));
+			
+			int zeroResultEquationsQuantity = calculateZeroResultEquations(sheet);
+			org.junit.Assert.assertTrue("zeroResultEquationsQuantity = " + zeroResultEquationsQuantity, zeroResultEquationsQuantity <= 3);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 4, 2));
+			zeroResultEquationsQuantity = calculateZeroResultEquations(sheet);
+			org.junit.Assert.assertTrue("zeroResultEquationsQuantity = " + zeroResultEquationsQuantity, zeroResultEquationsQuantity <= 2);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 4, 5));
+			zeroResultEquationsQuantity = calculateZeroResultEquations(sheet);
+			org.junit.Assert.assertTrue("zeroResultEquationsQuantity = " + zeroResultEquationsQuantity, zeroResultEquationsQuantity <= 5);
+			
+			sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(new EquationSheetGenerateRequest(100, 1, 4, 0));
+			zeroResultEquationsQuantity = calculateZeroResultEquations(sheet);
+			org.junit.Assert.assertTrue("zeroResultEquationsQuantity = " + zeroResultEquationsQuantity, zeroResultEquationsQuantity <= 0);
+		}
+	}
+	
+	private static int calculateZeroResultEquations(SimpleArithmeticEquationSheet sheet) {
+		int zeroResultEquationsQuantity = 0;
+		for (SimpleArithmeticEquation equation : sheet.getEquations()) {
+			if (equation.isZeroResult()) {
+				zeroResultEquationsQuantity++;
+			}
+		}
+		return zeroResultEquationsQuantity;
 	}
 }
