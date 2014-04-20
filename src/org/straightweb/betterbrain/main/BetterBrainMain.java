@@ -9,7 +9,7 @@ public class BetterBrainMain {
 
 	public static void main(String[] args) {
 		if (args.length > 0 && "help".equalsIgnoreCase(args[0])) {
-			System.out.println("For usage follow such call pattern 'betterbrain.jar [numberOfEquations] [maxNumberOfDuplicatesOnSheet] [maxZeroArgumentedEquationsMaxQuantity] [maxZeroResultEquationsMaxQuantity]'");
+			System.out.println("For usage follow such call pattern 'betterbrain.jar [numberOfEquations] [maxNumberOfDuplicatesOnSheet] [maxZeroArgumentedEquationsQuantity] [maxZeroResultEquationsQuantity]'");
 			return;
 		}
 
