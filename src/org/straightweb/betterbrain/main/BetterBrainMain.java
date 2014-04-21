@@ -1,5 +1,7 @@
 package org.straightweb.betterbrain.main;
 
+import java.util.List;
+
 import org.straightweb.betterbrain.arithmetics.EquationSheetGenerateRequest;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquation;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationSheet;
@@ -42,10 +44,33 @@ public class BetterBrainMain {
 
 		SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(sheetGenerateRequest);
 		
-		for (SimpleArithmeticEquation equation : sheet.getEquations()) {
-			System.out.println(SimpleArithmeticEquationUtil.formatEquation(equation, includeAnswers));
+		printEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers);
+		System.out.println();
+		printEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers);
+	}
+	
+	private static void printEquations(List<SimpleArithmeticEquation> equations, int startIndex, int endIndex, boolean includeAnswers) {
+		int size = endIndex - startIndex;
+		int equationsLeftUnprinted = size % 3; 
+		
+		for (int i = startIndex; i < startIndex + size - equationsLeftUnprinted; i = i + 3) {
+			System.out.println(String.format("%9s%18s%18s", 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(i), includeAnswers), 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(i + 1), includeAnswers), 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(i + 2), includeAnswers)));
 		}
 		
+		switch (equationsLeftUnprinted) {
+		case 1:
+			System.out.println(String.format("%9s", 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(startIndex + size - equationsLeftUnprinted), includeAnswers)));
+			break;
+		case 2:
+			System.out.println(String.format("%9s%18s", 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(startIndex + size - equationsLeftUnprinted), includeAnswers), 
+					SimpleArithmeticEquationUtil.formatEquation(equations.get(startIndex + size - equationsLeftUnprinted + 1), includeAnswers)));
+			break;
+		}
 	}
 
 }
