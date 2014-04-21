@@ -11,8 +11,9 @@
 	<property name="build.test" location="build/test"/>
 	<property name="dist"  location="dist"/>
 
-	<property name="projectname"   value="BetterBrain"/>
-	<property name="mainclass"   value="org.straightweb.betterbrain.main.BetterBrainMain"/>
+	<property name="projectname" value="BetterBrain"/>
+	<property name="mainclass" value="org.straightweb.betterbrain.main.BetterBrainMain"/>
+	<property name="runScriptWindows" value="betterbrain.bat"/>
 
 	<path id="master-classpath">
 		<fileset dir="${lib}">
@@ -65,11 +66,19 @@
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}"/>
 
-		<jar jarfile="${dist}/${projectname}-${DSTAMP}-${TSTAMP}.jar" basedir="${build.dir}">
+		<property name="distJarName" value="${projectname}-${DSTAMP}-${TSTAMP}.jar"/>
+		
+		<jar jarfile="${dist}/${distJarName}" basedir="${build.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="${mainclass}"/>
 			</manifest>
 		</jar>
+		
+		<echo file="${dist}/${runScriptWindows}">
+			@echo off
+			cd ${dist}
+			%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet.txt
+		</echo>
 	</target>
 
 	<target name="clean"

@@ -69,5 +69,7 @@ In case you want the answers directly in the sheet use -includeAnswers command a
 ...
 
 
+In case you are a Windows user for economy of time you may simply run betterbrain.bat file that will run BetterBrain with its default options and generate the results into equations_sheet.txt
+
 For help use this pattern:
 <directory_with_BetterBrain>/java -jar BetterBrain.jar help
