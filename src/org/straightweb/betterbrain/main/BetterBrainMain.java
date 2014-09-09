@@ -7,6 +7,8 @@ import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquation;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationSheet;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationSheetGenerator;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationUtil;
+import org.straightweb.betterbrain.memorization.MemorizationSetGenerateRequest;
+import org.straightweb.betterbrain.memorization.MemorizationSetGenerator;
 
 public class BetterBrainMain {
 
@@ -47,6 +49,10 @@ public class BetterBrainMain {
 		printEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers);
 		System.out.println();
 		printEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers);
+		
+		System.out.println();
+		System.out.println();
+		printMemorizationSet(new MemorizationSetGenerator().generateSet(new MemorizationSetGenerateRequest()));
 	}
 	
 	private static void printEquations(List<SimpleArithmeticEquation> equations, int startIndex, int endIndex, boolean includeAnswers) {
@@ -73,4 +79,11 @@ public class BetterBrainMain {
 		}
 	}
 
+	private static void printMemorizationSet(List<String> wordSet) {
+	    for (int i = 0; i < 6; i++) {
+	        int startingLineWordIdex = i * 5; 
+	        System.out.format("%-16s%-16s%-16s%-16s%-16s", wordSet.get(startingLineWordIdex), wordSet.get(startingLineWordIdex + 1), wordSet.get(startingLineWordIdex + 2), wordSet.get(startingLineWordIdex + 3), wordSet.get(startingLineWordIdex + 4));
+	        System.out.print("\n");
+	    }
+	}
 }
