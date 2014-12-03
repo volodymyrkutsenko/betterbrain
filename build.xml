@@ -78,7 +78,12 @@
 		<echo file="${dist}/${runScriptWindows}">
 			@echo off
 			cd ${dist}
-			%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet.txt
+			FOR /L %%A IN (1,1,30) DO (
+				%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_%%A.txt
+			)
+			FOR /L %%A IN (1,1,6) DO (
+				%JAVA_HOME%\bin\java.exe -jar ${distJarName} --wordset --noequations > words_%%A.txt
+			)
 		</echo>
 	</target>
 
