@@ -18,41 +18,57 @@ public class BetterBrainMain {
 			return;
 		}
 
-		int startArgIndexForFurtherOptions = 0;
-		boolean includeAnswers = false;
-		if (args.length > 0 && "-includeAnswers".equalsIgnoreCase(args[0])) {
-			includeAnswers = true;
-			startArgIndexForFurtherOptions = 1;
+		boolean needPrintEquations = !keyIsPresent(args, "--noequations");
+		if (needPrintEquations) {
+    		int startArgIndexForFurtherOptions = 0;
+    		boolean includeAnswers = false;
+    		if (args.length > 0 && "-includeAnswers".equalsIgnoreCase(args[0])) {
+    			includeAnswers = true;
+    			startArgIndexForFurtherOptions = 1;
+    		}
+    		
+    		EquationSheetGenerateRequest sheetGenerateRequest = new EquationSheetGenerateRequest();
+    		
+    		if (args.length > 0 + startArgIndexForFurtherOptions) {
+    			int numberOfEquationsToGenerate = Integer.valueOf(args[0 + startArgIndexForFurtherOptions]);
+    			sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate);
+    			if (args.length > 1 + startArgIndexForFurtherOptions) {
+    				int duplicatesMaxQuantity = Integer.valueOf(args[1 + startArgIndexForFurtherOptions]);
+    				sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity);
+    				if (args.length > 2 + startArgIndexForFurtherOptions) {
+    					int zeroArgumentedEquationsMaxQuantity = Integer.valueOf(args[2 + startArgIndexForFurtherOptions]);
+    					sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity);
+    					if (args.length > 3 + startArgIndexForFurtherOptions) {
+    						int zeroResultEquationsMaxQuantity = Integer.valueOf(args[3 + startArgIndexForFurtherOptions]);
+    						sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity, zeroResultEquationsMaxQuantity);
+    					}
+    				}
+    			}
+    		}
+    
+    		SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(sheetGenerateRequest);
+    		
+    		printEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers);
+    		System.out.println();
+    		printEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers);
 		}
 		
-		EquationSheetGenerateRequest sheetGenerateRequest = new EquationSheetGenerateRequest();
-		
-		if (args.length > 0 + startArgIndexForFurtherOptions) {
-			int numberOfEquationsToGenerate = Integer.valueOf(args[0 + startArgIndexForFurtherOptions]);
-			sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate);
-			if (args.length > 1 + startArgIndexForFurtherOptions) {
-				int duplicatesMaxQuantity = Integer.valueOf(args[1 + startArgIndexForFurtherOptions]);
-				sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity);
-				if (args.length > 2 + startArgIndexForFurtherOptions) {
-					int zeroArgumentedEquationsMaxQuantity = Integer.valueOf(args[2 + startArgIndexForFurtherOptions]);
-					sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity);
-					if (args.length > 3 + startArgIndexForFurtherOptions) {
-						int zeroResultEquationsMaxQuantity = Integer.valueOf(args[3 + startArgIndexForFurtherOptions]);
-						sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity, zeroResultEquationsMaxQuantity);
-					}
-				}
-			}
-		}
-
-		SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(sheetGenerateRequest);
-		
-		printEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers);
-		System.out.println();
-		printEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers);
-		
-		System.out.println();
-		System.out.println();
-		printMemorizationSet(new MemorizationSetGenerator().generateSet(new MemorizationSetGenerateRequest()));
+        if (keyIsPresent(args, "--wordset")) {
+            if (needPrintEquations) {
+                System.out.println();
+                System.out.println();
+            }
+            printMemorizationSet(new MemorizationSetGenerator().generateSet(new MemorizationSetGenerateRequest()));
+        }
+	}
+	
+	private static boolean keyIsPresent(String[] args, String key) {
+	    for (String arg : args) {
+	        if (key.equalsIgnoreCase(arg)) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 	private static void printEquations(List<SimpleArithmeticEquation> equations, int startIndex, int endIndex, boolean includeAnswers) {
