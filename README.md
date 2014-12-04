@@ -1,6 +1,8 @@
  
 ### This is the Arithmetical Equations Generator Release 1.0 release for BetterBrain.
 
+![Colourful Brain](/resources/brain.jpg?raw=true "Colourful Brain")
+
 BetterBrain itself is a logical addition to a book called "Train Your Brain - 60 Days to a Better Brain" by Ryuta Kawashima.
 In case you want to find out what the book is about search it in the Internet (some information available via this link [Train Your Brain](http://en.wikipedia.org/wiki/Train_Your_Brain:_60_Days_to_a_Better_Brain)) but here is a brief description of what it offers:
 In order to train your brain Ryuta Kawashima suggests simple set of exercises for each day that take no more than 5 minutes.
