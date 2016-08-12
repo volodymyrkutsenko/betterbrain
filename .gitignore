@@ -13,3 +13,8 @@ local.properties
 
 # Locally stored "Eclipse launch configurations"
 *.launch
+
+# IDEA files
+.iws
+workspace.xml
+tasks.xml
