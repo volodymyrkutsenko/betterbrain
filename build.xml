@@ -66,21 +66,35 @@
         description="generate the distribution" >
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}"/>
+		
+		<copy todir="${dist}/lib">
+			<fileset dir="${lib}"/>
+		</copy>
 
 		<property name="distJarName" value="${projectname}-${DSTAMP}-${TSTAMP}.jar"/>
+		
+		<manifestclasspath property="jar.classpath" jarfile="${dist}/${distJarName}">
+			<classpath>
+				<pathelement location="${dist}/lib"/>
+				<fileset dir="${dist}/lib">
+					<include name="**/*.jar"/>
+				</fileset>
+			</classpath>
+		</manifestclasspath>	
 		
 		<jar jarfile="${dist}/${distJarName}" basedir="${build.dir}">
 			<manifest>
 				<attribute name="Main-Class" value="${mainclass}"/>
+				<attribute name="Class-Path" value="${jar.classpath}"/>
 			</manifest>
 		</jar>
 		
 		<echo file="${dist}/${runScriptWindows}">
 			@echo off
 			cd ${dist}
-			FOR /L %%A IN (1,1,30) DO (
-				%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_%%A.txt
-			)
+			
+			%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_generation_log.txt
+			
 			FOR /L %%A IN (1,1,6) DO (
 				%JAVA_HOME%\bin\java.exe -jar ${distJarName} --wordset --noequations > words_%%A.txt
 			)
