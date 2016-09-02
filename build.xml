@@ -90,12 +90,19 @@
 		</jar>
 		
 		<echo file="${dist}/${runScriptWindows}">
-			@echo off
-			
-			%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_generation_log.txt
-			
-			FOR /L %%A IN (1,1,6) DO (
-				%JAVA_HOME%\bin\java.exe -jar ${distJarName} --wordset --noequations > words_%%A.txt
+			@ECHO off
+			PATH %PATH%;%JAVA_HOME%\bin\
+			FOR /f tokens^=2-5^ delims^=.-_^" %%j IN ('java -fullversion 2^>^&amp;1') DO SET "jver=%%j%%k%%l%%m"
+
+			:: Checking for Java 8 installed before running the application
+			IF %jver% LSS 18000 ( 
+				ECHO This version of Java is not supported by BetterBrain. The minimal required Java version installed is 1.8.0.
+			) ELSE (
+				%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_generation_log.txt
+				
+				FOR /L %%A IN (1,1,6) DO (
+					%JAVA_HOME%\bin\java.exe -jar ${distJarName} --wordset --noequations > words_%%A.txt
+				)
 			)
 		</echo>
 	</target>
