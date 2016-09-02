@@ -18,7 +18,7 @@ public class BetterBrainMain {
 	private static final int DEFAULT_EQUATION_SHEETS_NUMBER = 30;
 	private static final String EQUATION_SHEET_DOCX_FILENAME = String.valueOf(DEFAULT_EQUATION_SHEETS_NUMBER) + "_equation_sheet.docx";
 	private static final BigInteger DEFAULT_EQUATIONS_DOCX_FILE_LINE_SIZE = BigInteger.valueOf(320);
-	private static final int DEFAULT_EQUATIONS_DOCX_FILE_FONT_SIZE = 24;
+	private static final int DEFAULT_EQUATIONS_DOCX_FILE_FONT_SIZE = 22;
 
 	public static void main(String[] args) {
 		if (args.length > 0 && "help".equalsIgnoreCase(args[0])) {
@@ -60,7 +60,9 @@ public class BetterBrainMain {
 
 				appendEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers, equationsBuilder);
 				equationsBuilder.append('\n');
+				equationsBuilder.append('\n');
 				appendEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers, equationsBuilder);
+				equationsBuilder.append('\n');
 				equationsBuilder.append('\n');
 			}
 
