@@ -91,7 +91,6 @@
 		
 		<echo file="${dist}/${runScriptWindows}">
 			@echo off
-			cd ${dist}
 			
 			%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_generation_log.txt
 			
