@@ -85,11 +85,15 @@
 				ECHO This version of Java is not supported by BetterBrain. The minimal required Java version installed is 1.8.0.
 			) ELSE (
 				FOR /L %%A IN (1,1,30) DO (
+					ECHO Generating the equations sheet #%%A.
 					%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_%%A.txt
 				)
 				FOR /L %%A IN (1,1,6) DO (
+					ECHO Generating the words sheet #%%A.
 					%JAVA_HOME%\bin\java.exe -jar ${distJarName} --wordset --noequations > words_%%A.txt
 				)
+				
+				ECHO The whole generation process is finished.
 			)
 		</echo>
 	</target>
