@@ -77,7 +77,7 @@
 		
 		<echo file="${dist}/${runScriptWindows}">
 			@echo off
-			cd ${dist}
+			
 			FOR /L %%A IN (1,1,30) DO (
 				%JAVA_HOME%\bin\java.exe -jar ${distJarName} > equations_sheet_%%A.txt
 			)
