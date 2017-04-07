@@ -14,6 +14,7 @@
 	<property name="projectname" value="BetterBrain"/>
 	<property name="mainclass" value="org.straightweb.betterbrain.main.BetterBrainMain"/>
 	<property name="runScriptWindows" value="betterbrain.bat"/>
+	<property name="runScriptLinux" value="betterbrain.sh"/>
 
 	<path id="master-classpath">
 		<fileset dir="${lib}">
@@ -109,6 +110,29 @@
 				ECHO The whole generation process is finished.
 			)
 		</echo>
+		
+		<echo file="${dist}/${runScriptLinux}">
+			#!/bin/bash
+			VER=`java -version 2>&amp;1 | grep "java version" | awk '{print $3}' | tr -d \" | awk '{split($0, array, ".")} END{print array[2]}'`
+
+			# Checking for Java 8 installed before running the application
+			if [[ $VER -lt 8 ]]; then
+				echo This version of Java is not supported by BetterBrain. The minimal required Java version installed is 1.8.0.
+			else 
+				echo Generating the equations sheet.
+				$JAVA_HOME/bin/java -jar ${distJarName} --equations --docx --filename 30_equation_sheet.docx > equations_sheet_generation_log.txt
+				
+				for ((i = 1; i &lt; 6; i++)) 
+				do
+					echo Generating the words sheet $i.
+					$JAVA_HOME/bin/java -jar ${distJarName} --wordset --filename words_$i.txt > wordset_generation_log.txt
+				done
+				
+				echo The whole generation process is finished.
+			fi
+		</echo>
+		
+		<chmod file="${dist}/${runScriptLinux}" perm="700"/>
 	</target>
 
 	<target name="clean"
