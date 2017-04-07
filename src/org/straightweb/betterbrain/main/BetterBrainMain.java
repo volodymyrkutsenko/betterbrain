@@ -1,8 +1,11 @@
 package org.straightweb.betterbrain.main;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.straightweb.betterbrain.arithmetics.EquationSheetGenerateRequest;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquation;
 import org.straightweb.betterbrain.arithmetics.SimpleArithmeticEquationSheet;
@@ -16,68 +19,73 @@ import org.straightweb.betterbrain.memorization.MemorizationSetGenerator;
 public class BetterBrainMain {
 
 	private static final int DEFAULT_EQUATION_SHEETS_NUMBER = 30;
-	private static final String EQUATION_SHEET_DOCX_FILENAME = String.valueOf(DEFAULT_EQUATION_SHEETS_NUMBER) + "_equation_sheet.docx";
 	private static final BigInteger DEFAULT_EQUATIONS_DOCX_FILE_LINE_SIZE = BigInteger.valueOf(320);
 	private static final int DEFAULT_EQUATIONS_DOCX_FILE_FONT_SIZE = 22;
+	private static final String EQUATIONS_ARGUMENT = "--equations";
+	private static final String WORDSET_ARGUMENT = "--wordset";
+	private static final String EXPORT_FILENAME_ARGUMENT = "--filename";
+	private static final String DOCX_ARGUMENT = "--docx";
+	private static final String HELP_ARGUMENT = "--help";
+	private static final int LINE_NUMBER = 6;
+	private static final int WORDS_IN_LINE_NUMBER = 5;
 
 	public static void main(String[] args) {
-		if (args.length > 0 && "help".equalsIgnoreCase(args[0])) {
-			System.out.println("For usage follow such call pattern 'betterbrain.jar [-includeAnswers] [numberOfEquations] [maxNumberOfDuplicatesOnSheet] [maxZeroArgumentedEquationsQuantity] [maxZeroResultEquationsQuantity]'");
+		if (args.length > 0 && HELP_ARGUMENT.equalsIgnoreCase(args[0])) {
+			System.out.println("For usage follow one of such call patterns: ");
+			System.out.println("'betterbrain.jar " + EQUATIONS_ARGUMENT + " [" + DOCX_ARGUMENT + "] " + EXPORT_FILENAME_ARGUMENT + " <FILEMANE>'");
+			System.out.println("'betterbrain.jar " + WORDSET_ARGUMENT + " " + EXPORT_FILENAME_ARGUMENT + " <FILEMANE>'");
 			return;
 		}
 
-		boolean needPrintEquations = !isKeyPresent(args, "--noequations");
-		if (needPrintEquations) {
-    		int startArgIndexForFurtherOptions = 0;
-    		boolean includeAnswers = false;
-    		if (args.length > 0 && "-includeAnswers".equalsIgnoreCase(args[0])) {
-    			includeAnswers = true;
-    			startArgIndexForFurtherOptions = 1;
-    		}
+		String exportFilename = retrieveExportFilename(args);
 
+		if (StringUtils.isEmpty(exportFilename)) {
+			System.out.println("No filename provided for export! Please provide the export filename by using the " + EXPORT_FILENAME_ARGUMENT + " launch argument");
+			return;
+		}
+
+		boolean needPrintEquations = isKeyPresent(args, EQUATIONS_ARGUMENT);
+		boolean needPrintWordset = isKeyPresent(args, WORDSET_ARGUMENT);
+
+		if (needPrintEquations && needPrintWordset) {
+			System.out.println(EQUATIONS_ARGUMENT + " and " + WORDSET_ARGUMENT + " cannot be used together! Please choose either equations or memorization wordset export launch argument.");
+			return;
+		}
+
+		if (needPrintEquations) {
 			StringBuilder equationsBuilder = new StringBuilder();
 			for (int i = 0; i < DEFAULT_EQUATION_SHEETS_NUMBER; i++) {
 				EquationSheetGenerateRequest sheetGenerateRequest = new EquationSheetGenerateRequest();
 
-				if (args.length > 0 + startArgIndexForFurtherOptions) {
-					int numberOfEquationsToGenerate = Integer.valueOf(args[0 + startArgIndexForFurtherOptions]);
-					sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate);
-					if (args.length > 1 + startArgIndexForFurtherOptions) {
-						int duplicatesMaxQuantity = Integer.valueOf(args[1 + startArgIndexForFurtherOptions]);
-						sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity);
-						if (args.length > 2 + startArgIndexForFurtherOptions) {
-							int zeroArgumentedEquationsMaxQuantity = Integer.valueOf(args[2 + startArgIndexForFurtherOptions]);
-							sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity);
-							if (args.length > 3 + startArgIndexForFurtherOptions) {
-								int zeroResultEquationsMaxQuantity = Integer.valueOf(args[3 + startArgIndexForFurtherOptions]);
-								sheetGenerateRequest = new EquationSheetGenerateRequest(numberOfEquationsToGenerate, duplicatesMaxQuantity, zeroArgumentedEquationsMaxQuantity, zeroResultEquationsMaxQuantity);
-							}
-						}
-					}
-				}
-
 				SimpleArithmeticEquationSheet sheet = new SimpleArithmeticEquationSheetGenerator().generateSheet(sheetGenerateRequest);
 
-				appendEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, includeAnswers, equationsBuilder);
+				appendEquations(sheet.getEquations(), 0, sheet.getEquations().size() / 2, false, equationsBuilder);
 				equationsBuilder.append('\n');
 				equationsBuilder.append('\n');
-				appendEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), includeAnswers, equationsBuilder);
+				appendEquations(sheet.getEquations(), sheet.getEquations().size() / 2, sheet.getEquations().size(), false, equationsBuilder);
 				equationsBuilder.append('\n');
 				equationsBuilder.append('\n');
 			}
 
-			writeDocxEquationsFile(equationsBuilder.toString());
+			if (isKeyPresent(args, DOCX_ARGUMENT)) {
+				writeDocxEquationsFile(equationsBuilder.toString(), exportFilename);
+			} else {
+				writeSimpleTextFile(equationsBuilder.toString(), exportFilename);
+			}
 		}
-		
-        if (isKeyPresent(args, "--wordset")) {
-            if (needPrintEquations) {
-                System.out.println();
-                System.out.println();
-            }
-            printMemorizationSet(new MemorizationSetGenerator().generateSet(new MemorizationSetGenerateRequest()));
-        }
+
+		if (needPrintWordset) {
+			StringBuilder wordsetBuilder = new StringBuilder();
+			printMemorizationSet(new MemorizationSetGenerator().generateSet(new MemorizationSetGenerateRequest()), wordsetBuilder);
+			if (isKeyPresent(args, DOCX_ARGUMENT)) {
+				System.out.println(DOCX_ARGUMENT + " argument cannot be used with the " + WORDSET_ARGUMENT + " argument.");
+			} else {
+				writeSimpleTextFile(wordsetBuilder.toString(), exportFilename);
+			}
+
+		}
 	}
-	
+
 	private static boolean isKeyPresent(String[] args, String key) {
 	    for (String arg : args) {
 	        if (key.equalsIgnoreCase(arg)) {
@@ -86,7 +94,20 @@ public class BetterBrainMain {
 	    }
 	    return false;
 	}
-	
+
+	private static String retrieveExportFilename(String[] args) {
+		boolean retrieveFilename = false;
+		for (String arg : args) {
+			if (retrieveFilename) {
+				return arg;
+			}
+			if (EXPORT_FILENAME_ARGUMENT.equalsIgnoreCase(arg)) {
+				retrieveFilename = true;
+			}
+		}
+		return StringUtils.EMPTY;
+	}
+
 	private static void appendEquations(List<SimpleArithmeticEquation> equations, int startIndex, int endIndex, boolean includeAnswers, StringBuilder resultBuilder) {
 		int size = endIndex - startIndex;
 		int equationsLeftUnprinted = size % 3;
@@ -114,19 +135,27 @@ public class BetterBrainMain {
 		}
 	}
 
-	private static void writeDocxEquationsFile(String equations) {
+	private static void writeDocxEquationsFile(String equations, String fileName) {
 		DocxFileGeneratorConfiguration equationsFileConfiguration = new DocxFileGeneratorConfiguration();
 		equationsFileConfiguration.setLineSize(DEFAULT_EQUATIONS_DOCX_FILE_LINE_SIZE);
 		equationsFileConfiguration.setFontSize(DEFAULT_EQUATIONS_DOCX_FILE_FONT_SIZE);
-		DocxFileGenerator.generateDocxFile(EQUATION_SHEET_DOCX_FILENAME, equations, equationsFileConfiguration);
+		DocxFileGenerator.generateDocxFile(fileName, equations, equationsFileConfiguration);
 	}
 
-	private static void printMemorizationSet(List<String> wordSet) {
-	    for (int i = 0; i < 6; i++) {
-	        int startingLineWordIdex = i * 5;
-	        System.out.format("%-16s%-16s%-16s%-16s%-16s", wordSet.get(startingLineWordIdex), wordSet.get(startingLineWordIdex + 1), wordSet.get(startingLineWordIdex + 2), wordSet.get(startingLineWordIdex + 3), wordSet.get(startingLineWordIdex + 4));
-	        System.out.print("\n");
-	    }
+	private static void writeSimpleTextFile(String wordset, String fileName) {
+		try (FileWriter fileWriter = new FileWriter(fileName)) {
+			fileWriter.write(wordset);
+		} catch (IOException e) {
+			System.out.println(e);
+		}
+	}
+
+	private static void printMemorizationSet(List<String> wordSet, StringBuilder resultBuilder) {
+		for (int i = 0; i < LINE_NUMBER; i++) {
+			int startingLineWordIndex = i * WORDS_IN_LINE_NUMBER;
+			resultBuilder.append(String.format("%-16s%-16s%-16s%-16s%-16s", wordSet.get(startingLineWordIndex), wordSet.get(startingLineWordIndex + 1), wordSet.get(startingLineWordIndex + 2), wordSet.get(startingLineWordIndex + 3), wordSet.get(startingLineWordIndex + 4)));
+			resultBuilder.append("\n");
+		}
 	}
 
 }
