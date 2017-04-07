@@ -15,6 +15,9 @@ import org.straightweb.betterbrain.generating.DocxFileGenerator;
 import org.straightweb.betterbrain.generating.DocxFileGeneratorConfiguration;
 import org.straightweb.betterbrain.memorization.MemorizationSetGenerateRequest;
 import org.straightweb.betterbrain.memorization.MemorizationSetGenerator;
+import org.straightweb.betterbrain.stroop.EntriesGenerator;
+import org.straightweb.betterbrain.stroop.EntriesGeneratorRequest;
+import org.straightweb.betterbrain.stroop.WordEntry;
 
 public class BetterBrainMain {
 
@@ -23,11 +26,16 @@ public class BetterBrainMain {
 	private static final int DEFAULT_EQUATIONS_DOCX_FILE_FONT_SIZE = 22;
 	private static final String EQUATIONS_ARGUMENT = "--equations";
 	private static final String WORDSET_ARGUMENT = "--wordset";
+	private static final String STROOP_ARGUMENT = "--stroop";
 	private static final String EXPORT_FILENAME_ARGUMENT = "--filename";
 	private static final String DOCX_ARGUMENT = "--docx";
 	private static final String HELP_ARGUMENT = "--help";
 	private static final int LINE_NUMBER = 6;
 	private static final int WORDS_IN_LINE_NUMBER = 5;
+
+	// Stroop
+	private static final int ENTRIES_IN_ROW_NUMBER = 5;
+	private static final int ENTRIES_NUMBER = ENTRIES_IN_ROW_NUMBER * 10;
 
 	public static void main(String[] args) {
 		if (args.length > 0 && HELP_ARGUMENT.equalsIgnoreCase(args[0])) {
@@ -46,6 +54,7 @@ public class BetterBrainMain {
 
 		boolean needPrintEquations = isKeyPresent(args, EQUATIONS_ARGUMENT);
 		boolean needPrintWordset = isKeyPresent(args, WORDSET_ARGUMENT);
+		boolean needPrintStroop = isKeyPresent(args, STROOP_ARGUMENT);
 
 		if (needPrintEquations && needPrintWordset) {
 			System.out.println(EQUATIONS_ARGUMENT + " and " + WORDSET_ARGUMENT + " cannot be used together! Please choose either equations or memorization wordset export launch argument.");
@@ -82,7 +91,22 @@ public class BetterBrainMain {
 			} else {
 				writeSimpleTextFile(wordsetBuilder.toString(), exportFilename);
 			}
+		}
 
+		if (needPrintStroop) {
+			StringBuilder stroopBuilder = new StringBuilder();
+			EntriesGeneratorRequest request = new EntriesGeneratorRequest(ENTRIES_NUMBER);
+			List<WordEntry> wordEntries = EntriesGenerator.generateWordEntries(request);
+
+			for (int i = 0; i < ENTRIES_NUMBER; i++) {
+				WordEntry entry = wordEntries.get(i);
+				stroopBuilder.append(entry.getText() + "[" + entry.getColor() + "] ");
+				if ((i + 1) % ENTRIES_IN_ROW_NUMBER == 0) {
+					stroopBuilder.append('\n');
+				}
+			}
+
+			writeSimpleTextFile(stroopBuilder.toString(), exportFilename);
 		}
 	}
 
