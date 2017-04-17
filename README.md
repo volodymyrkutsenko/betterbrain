@@ -12,7 +12,7 @@ Each five days the trainee takes a memory test, a counting test and a stroop tes
 The book has this program covered for 60 days. However Ryuta Kawashima insists on continuing the training even after completion of the 60 day program but the book itself does not have any more exercises like ones the trainee has already passed.
 
 The current BetterBrain project is intended to generate the whole 30 day training program similar to what the original book contains.
-Each new generated program is generated completely random and brand new.
+Each new generated program is completely random and brand new.
 
 Using BetterBrain Arithmetical Equations Generator Release 1.0 release you can generate: <br />
 * 30 sheets with 100 simple arithmetical equations for one day in either simple text or DOCX format
