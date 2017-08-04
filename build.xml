@@ -40,7 +40,7 @@
 		<javac srcdir="${src.test}" destdir="${build.test}" >
 			<classpath refid="master-classpath"/>
 		</javac>
-		<copy file="${src}/org/straightweb/betterbrain/memorization/dictionary/analyzing/lemma.num" todir="${build.dir}/org/straightweb/betterbrain/memorization/dictionary/analyzing/"/>
+		<copy file="${src}/org/straightweb/betterbrain/memorization/dictionary/analyzing/dictionary_rus.txt" todir="${build.dir}/org/straightweb/betterbrain/memorization/dictionary/analyzing/"/>
 	</target>
 
 	<target name="test" depends="compile">

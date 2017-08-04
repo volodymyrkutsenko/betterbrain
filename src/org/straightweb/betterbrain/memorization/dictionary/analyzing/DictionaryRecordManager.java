@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class DictionaryRecordManager {
 
-    private static final String DICTIONARY_FILE_NAME = "lemma.num";
+    private static final String DICTIONARY_FILE_NAME = "dictionary_rus.txt";
     
     private List<DictionaryRecord> records;
 
